@@ -47,7 +47,7 @@ def employee_form():
 
     employee_treeview = ttk.Treeview(
         top_Frame,
-        columns=('empid', 'empname', 'empnumber', 'gender', 'work_shift', 'address'),
+        columns=('empid', 'empname', 'empnumber', 'gender', 'work_shift', 'address','email'),
         show='headings',
         yscrollcommand=vertical_scrollbar.set,
         xscrollcommand=horizontal_scrollbar.set
@@ -58,6 +58,7 @@ def employee_form():
 
     horizontal_scrollbar.pack(side=BOTTOM, fill=X)
     vertical_scrollbar.pack(side=RIGHT, fill=Y)
+    horizontal_scrollbar.config(command=employee_treeview.xview)
     employee_treeview.pack(fill=BOTH, expand=True)
 
     employee_treeview.heading('empid', text='شماره پرسنلی')
@@ -66,11 +67,13 @@ def employee_form():
     employee_treeview.heading('gender', text='جنسیت')
     employee_treeview.heading('work_shift', text='شیفت کاری')
     employee_treeview.heading('address', text='آدرس')
+    employee_treeview.heading('email', text='ایمیل')
 
     employee_treeview.column('empid', width=100)
     employee_treeview.column('empname', width=140)
-    employee_treeview.column('empnumber', width=100)
+    employee_treeview.column('empnumber', width=120)
     employee_treeview.column('gender', width=80)
+    employee_treeview.column('email', width=180)
     employee_treeview.column('work_shift', width=200)
     employee_treeview.column('address', width=300)
 
