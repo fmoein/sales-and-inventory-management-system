@@ -1,5 +1,23 @@
 from tkinter import *
 
+#Functionality Part
+def employee_form():
+    global back_image
+    employee_frame = Frame(window, width=1070, height=567, bg='#4b39e9')
+    employee_frame.place(x=200, y=100)
+
+    heading_label = Label(employee_frame,text='مدیریت کارمندان',font=('fonts/Persian-Yekan.ttf', 16, 'bold'),bg='#4b39e9',fg='white')
+    heading_label.place(x=0, y=0, relwidth=1)
+
+    back_image = PhotoImage(file='images/back-button.png')
+    back_button = Button(employee_frame,image=back_image,bd=0,cursor='hand2', command=lambda: employee_frame.place_forget())
+    back_button.place(x=10, y=30)
+
+
+
+
+
+#GUI Part
 window=Tk()
 
 window.title('Dashboard')
@@ -30,7 +48,7 @@ menuLabel.pack(fill=X)
 
 
 employee_icon=PhotoImage(file='images/employee.png')
-employee_button=Button(leftFrame,image=employee_icon,compound=LEFT,text='          کارمندان',font=('fonts/Persian-Yekan.ttf',15,'bold'))
+employee_button=Button(leftFrame,image=employee_icon,compound=LEFT,text='          کارمندان',font=('fonts/Persian-Yekan.ttf',15,'bold'),anchor='w', padx=10, command=employee_form)
 employee_button.pack(fill=X)
 
 
