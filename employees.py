@@ -7,19 +7,29 @@ from tkcalendar import DateEntry
 import pymysql
 
 
+def treeview_data():
+    cursor, connection = connect_database()
+    if not cursor or not connection:
+        return
+    cursor.execute('select * from employee_data')
+    employee_records = cursor.fetchall()
+    for records in employee_records:
+        employee_treeview.insert('',END,values=records)
+
+
 def connect_database():
     try:
         connection = pymysql.connect(host='localhost', user='root', passwd='')
-        curser = connection.cursor()
+        cursor = connection.cursor()
     except:
         messagebox.showerror('خطا', ' اتصال به پایگاه داده ناموفق. لطفا mysql را باز کنید')
         return None, None
-    curser.execute('CREATE DATABASE IF NOT EXISTS inventory_system DEFAULT CHARACTER SET utf8')
-    curser.execute('USE inventory_system')
-    curser.execute('CREATE TABLE IF NOT EXISTS employee_data (empid INT PRIMARY KEY, name VARCHAR(100),'
+    cursor.execute('CREATE DATABASE IF NOT EXISTS inventory_system DEFAULT CHARACTER SET utf8')
+    cursor.execute('USE inventory_system')
+    cursor.execute('CREATE TABLE IF NOT EXISTS employee_data (empid INT PRIMARY KEY, name VARCHAR(100),'
                    'email VARCHAR(100), gender VARCHAR(50),dob VARCHAR(30), contact VARCHAR(30),'
                    'work_shift VARCHAR(50), address VARCHAR(100), usertype VARCHAR(50), password VARCHAR(50))')
-    return curser, connection
+    return cursor, connection
 
 
 def add_employee(empid, name, email, gender, dob, contact, work_shift, address, usertype, password):
@@ -28,17 +38,19 @@ def add_employee(empid, name, email, gender, dob, contact, work_shift, address, 
             work_shift == 'ساعت کاری را انتخاب کنید' or address == '\n' or usertype == 'نوع کاربری را انتخاب کنید'):
         messagebox.showerror('خطا', 'هیچ فیلدی نباید خالی باشد')
     else:
-        curser, connection = connect_database()
-        if not curser or not connection:
+        cursor, connection = connect_database()
+        if not cursor or not connection:
             return
-        curser.execute('INSERT INTO employee_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',(empid, name, email, gender,
+        cursor.execute('INSERT INTO employee_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                       (empid, name, email, gender,
                         dob, contact, work_shift, address, usertype, password))
         connection.commit()
-        messagebox.showinfo('عملیات موفق','اطلاعات کارمند با موفقیت ثبت شد')
+        treeview_data()
+        messagebox.showinfo('عملیات موفق', 'اطلاعات کارمند با موفقیت ثبت شد')
 
 
 def employee_form(window):
-    global back_image
+    global back_image, employee_treeview
     employee_frame = Frame(window, width=1070, height=567, bg='white')
     employee_frame.place(x=200, y=100)
 
@@ -86,7 +98,7 @@ def employee_form(window):
 
     employee_treeview = ttk.Treeview(
         top_Frame,
-        columns=('empid', 'empname', 'empnumber', 'gender', 'dob', 'work_shift', 'address', 'email', 'user_type'),
+        columns=('empid', 'empname', 'email', 'gender', 'dob', 'empnumber', 'work_shift', 'address', 'user_type'),
         show='headings',
         yscrollcommand=vertical_scrollbar.set,
         xscrollcommand=horizontal_scrollbar.set
@@ -102,22 +114,25 @@ def employee_form(window):
 
     employee_treeview.heading('empid', text='شماره پرسنلی')
     employee_treeview.heading('empname', text='نام و نام خانوادگی')
-    employee_treeview.heading('empnumber', text='شماره تماس')
-    employee_treeview.heading('gender', text='جنسیت')
     employee_treeview.heading('email', text='ایمیل')
+    employee_treeview.heading('gender', text='جنسیت')
     employee_treeview.heading('dob', text='تاریخ تولد')
+    employee_treeview.heading('empnumber', text='شماره تماس')
     employee_treeview.heading('work_shift', text='شیفت کاری')
     employee_treeview.heading('address', text='آدرس')
     employee_treeview.heading('user_type', text='نوع کاربری')
 
     employee_treeview.column('empid', width=100)
     employee_treeview.column('empname', width=140)
-    employee_treeview.column('empnumber', width=120)
-    employee_treeview.column('gender', width=80)
     employee_treeview.column('email', width=180)
-    employee_treeview.column('work_shift', width=200)
-    employee_treeview.column('address', width=300)
-    employee_treeview.column('user_type', width=300)
+    employee_treeview.column('gender', width=50)
+    employee_treeview.column('dob', width=80)
+    employee_treeview.column('empnumber', width=120)
+    employee_treeview.column('work_shift', width=80)
+    employee_treeview.column('address', width=250)
+    employee_treeview.column('user_type', width=70)
+
+    treeview_data()
 
     detail_frame = Frame(employee_frame, bg='white')
     detail_frame.place(x=30, y=280)
