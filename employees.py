@@ -13,8 +13,9 @@ def treeview_data():
         return
     cursor.execute('select * from employee_data')
     employee_records = cursor.fetchall()
+    employee_treeview.delete(*employee_treeview.get_children())
     for records in employee_records:
-        employee_treeview.insert('',END,values=records)
+        employee_treeview.insert('', END, values=records)
 
 
 def connect_database():
@@ -47,6 +48,23 @@ def add_employee(empid, name, email, gender, dob, contact, work_shift, address, 
         connection.commit()
         treeview_data()
         messagebox.showinfo('عملیات موفق', 'اطلاعات کارمند با موفقیت ثبت شد')
+
+
+def clear_fields(empid_entry, empname_entry, email_entry, gender_combobox, dob_date_entry, empnumber_entry,
+                 work_shift_combobox, address_text,
+                 user_type_combobox, password_entry):
+    empid_entry.delete(0, END)
+    empname_entry.delete(0, END)
+    email_entry.delete(0, END)
+    gender_combobox.set('جنسیت را انتخاب کنید')
+    from datetime import date
+    dob_date_entry.set_date(date.today())
+    empnumber_entry.delete(0, END)
+    work_shift_combobox.set('ساعت کاری را انتخاب کنید')
+    address_text.delete(1.0, END)
+    user_type_combobox.set('نوع کاربری را انتخاب کنید')
+    password_entry.delete(0, END)
+
 
 
 def employee_form(window):
@@ -217,5 +235,11 @@ def employee_form(window):
     delete_button.grid(row=0, column=2, padx=20)
 
     clear_button = Button(button_frame, text='پاک کردن',
-                          font=('fonts/Persian-Yekan.ttf', 12), fg='white', bg='#00198f')
+                          font=('fonts/Persian-Yekan.ttf', 12), fg='white', bg='#00198f',
+                          command=lambda: clear_fields(empid_entry,
+                                                       empname_entry, email_entry,
+                                                       gender_combobox, dob_date_entry,
+                                                       empnumber_entry, work_shift_combobox,
+                                                       address_text, user_type_combobox,
+                                                       password_entry))
     clear_button.grid(row=0, column=3, padx=20)
