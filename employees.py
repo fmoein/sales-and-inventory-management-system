@@ -27,7 +27,7 @@ def treeview_data():
 
 def connect_database():
     try:
-        connection = pymysql.connect(host='localhost', user='root', passwd='')
+        connection = pymysql.connect(host='localhost', user='root', passwd='', port=3306)
         cursor = connection.cursor()
     except:
         messagebox.showerror('خطا', ' اتصال به پایگاه داده ناموفق. لطفا mysql را باز کنید')
